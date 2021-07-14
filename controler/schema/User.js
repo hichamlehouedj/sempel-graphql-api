@@ -5,8 +5,8 @@ export const typeDefs = gql`
         extend type Query {
                 user(id: ID!): User! @isAuth
                 allUsers: [User!]!
-                allUsersLimited(offset: Int,  limit: Int): [User!]!
-                allUsersLimitedBy(offset: Int,  limit: Int, option: String): [User!]!
+                allUsersBy(option: String): [User!]!
+                allUsersLimitedBy(offset: Int!,  limit: Int!, option: String): [User!]!
         }
 
         extend type Mutation {

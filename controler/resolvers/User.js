@@ -13,13 +13,27 @@ export const resolvers = {
 
                 allUsers:       async (obj, args, context, info) => User.findAll(),
 
-                allUsersLimited:       async (obj, args, context, info) => User.findAll({offset: args.offset,  limit: args.limit}),
-
-                allUsersLimitedBy:       async (obj, args, context, info) => User.findAll({
-                        where: JSON.parse(args.option),
-                        offset: args.offset,
-                        limit: args.limit
+                allUsersBy:       async (obj, args, context, info) => User.findAll({
+                        where: JSON.parse(args.option)
                 }),
+
+                allUsersLimitedBy:       async (obj, args, context, info) => {
+                        try {
+                                if (args.option !== null && args.option !== undefined && args.option !== "") {
+                                        
+                                        return await User.findAll({
+                                                where: JSON.parse(args.option),
+                                                offset: args.offset,
+                                                limit: args.limit
+                                        })
+                                }
+
+                                return await User.findAll({ offset: args.offset, limit: args.limit })
+
+                        } catch (error) {
+                                throw new ApolloError(error.message, 404)
+                        }
+                },
         },
 
         User: {
