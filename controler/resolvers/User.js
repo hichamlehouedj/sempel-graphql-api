@@ -1,6 +1,6 @@
 import { ApolloError } from 'apollo-server';
 import bcrypt from 'bcryptjs';
-import { issueAuthToken, serializeUser } from '../../helpers';
+import { issueAuthToken, serializeUser, createMail } from '../../helpers';
 
 import { User, Person  } from '../../models';
 
@@ -60,8 +60,16 @@ export const resolvers = {
 
                                 user = await serializeUser(user);
 
+                                
+
                                 // Issue Token
                                 let token = await issueAuthToken(user);
+
+                                await createMail ({
+                                        to: "hicham55lehouedj@gmail.com",
+                                        subject: "verfy email",
+                                        text: token
+                                });
 
                                 return {
                                         user,
