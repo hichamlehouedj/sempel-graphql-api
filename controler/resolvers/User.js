@@ -29,19 +29,20 @@ export const resolvers = {
         Mutation: {
                 authenticateUser: async (obj, args, context, info) => {
                         try {
-                                let user = await Users.findOne({ where: { email: args.email } });
+                                let person = await Person.findOne({ where: { email: args.email } });
+                                
+                                // Person is exist
+                                if (!person) { throw new ApolloError('User not found'); }
 
-                                // password
-                                if (!user) {
-                                        throw new ApolloError('User not found');
-                                }
+                                let user = await User.findOne({ where: { id_person: person.id } });
 
+                                // User is exist
+                                if (!user) { throw new ApolloError('User not found'); }
+                                
                                 let isMatch = await compare(args.password, user.password);
 
                                 // If Password don't match
-                                if (!isMatch) {
-                                        throw new ApolloError("Password not incorrect");
-                                }
+                                if (!isMatch) { throw new ApolloError("Password not incorrect"); }
 
                                 user = await serializeUser(user);
 
