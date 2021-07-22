@@ -1,6 +1,9 @@
 import { ApolloError } from 'apollo-server';
 import bcrypt from 'bcryptjs';
 import { issueAuthToken, serializeUser, createMail } from '../../helpers';
+import jwt from 'jsonwebtoken';
+
+const SECRET = "H0675722241h";
 
 import { User, Person  } from '../../models';
 
@@ -67,7 +70,7 @@ export const resolvers = {
 
                                 await createMail ({
                                         to: "hicham55lehouedj@gmail.com",
-                                        subject: "verfy email",
+                                        subject: "Email Verification",
                                         text: token
                                 });
 
@@ -110,6 +113,49 @@ export const resolvers = {
                                         user: result,
                                         token: token
                                 }
+                        } catch (error) {
+                                throw new ApolloError(error.message)
+                        }
+                },
+
+                emailVerification: async (obj, args, context, info) => {
+                        try {
+
+                                let token = args.token;
+
+                                // Verify the extracted token
+                                let decodedToken;
+                                try {
+                                        decodedToken = jwt.verify(token, SECRET);
+                                } catch (err) {
+                                        throw new ApolloError(err.message)
+                                }
+
+                                // If decoded token is null then set authentication of the request false
+                                if (!decodedToken) {
+                                        throw new ApolloError("authorization expired or unauthorized");
+                                }
+
+                                // If the user has valid token then Find the user by decoded token's id
+                                let authUser = await User.findByPk(decodedToken.id);
+                                if (!authUser) {
+                                        throw new ApolloError("User not found")
+                                }
+
+                                await User.update({'activation': 'active'}, { where: { id: decodedToken.id } })
+                                
+                                let user = await User.findOne({ where: { id: decodedToken.id } });
+
+                                user = await serializeUser(user);
+
+                                // New Token
+                                token = await issueAuthToken(user);
+
+                                return {
+                                        user,
+                                        token
+                                }
+
                         } catch (error) {
                                 throw new ApolloError(error.message)
                         }

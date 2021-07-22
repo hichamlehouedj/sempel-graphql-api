@@ -4,6 +4,11 @@ import cors from "cors";
 import { ApolloServer } from 'apollo-server-express';
 import { ApolloServerPluginInlineTrace } from "apollo-server-core";
 
+import { createServer } from 'http';
+import { execute, subscribe } from 'graphql';
+import { SubscriptionServer } from 'subscriptions-transport-ws';
+import { makeExecutableSchema } from '@graphql-tools/schema';
+
 import {AuthMiddleware} from './middlewares/auth';
 import DB from './config/DBContact';
 
@@ -14,6 +19,9 @@ import {schemaDirectives} from './directives';
 const app = express();
 app.use(cors());
 
+// This `app` is the returned value from `express()`.
+const httpServer = createServer(app);
+
 // Use your dependencies here
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
@@ -22,13 +30,9 @@ app.use(AuthMiddleware);
 
 const server = new ApolloServer({ 
     schema,
-    schemaDirectives,
-    tracing: true,
-    playground: true,
-    introspection: true,
     plugins: [ApolloServerPluginInlineTrace()],
     context: ({ req }) => {
-        let {user, isAuth, } = req;
+        let {user, isAuth } = req;
         return {
             req,
             user,
@@ -41,6 +45,15 @@ await server.start();
 
 server.applyMiddleware({ app });
 
+const subscriptionServer = SubscriptionServer.create(
+    { schema, execute, subscribe, }, 
+    {server: httpServer, path: server.graphqlPath,}
+);
+
+['SIGINT', 'SIGTERM'].forEach(signal => {
+    process.on(signal, () => subscriptionServer.close());
+});
+
 try {
     await DB.authenticate();
     console.log('Connection has been established successfully.');
@@ -52,6 +65,6 @@ try {
 const PORT = process.env.PORT || 5000;
 
 // Start Server here
-app.listen(PORT,() => {
+httpServer.listen(PORT,() => {
     console.log(`Server is running is http://localhost:${PORT}${server.graphqlPath}`);
 });

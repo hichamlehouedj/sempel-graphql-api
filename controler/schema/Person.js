@@ -2,7 +2,7 @@ import { gql } from 'apollo-server';
 
 export const typeDefs = gql`
     extend type Query {
-        person(id: ID!): Person! @isAuth
+        person(id: ID!): Person!
         allPersons: [Person!]!
     }
 
