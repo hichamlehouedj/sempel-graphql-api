@@ -1,12 +1,12 @@
 import { ApolloError } from 'apollo-server';
-import { Person } from '../../models';
+import { Company, Person } from '../../models';
 
 
 export const resolvers = {
 
         Query: {
-                person:           async (obj, args, context, info) => User.findByPk(args.id),
-                allPersons:       async (obj, args, context, info) => User.findAll(),
+                person:           async (obj, args, context, info) => await Person.findByPk(args.id),
+                allPersons:       async (obj, args, context, info) => await Person.findAll()
         },
 
         Person: {

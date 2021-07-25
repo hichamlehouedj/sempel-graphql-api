@@ -1,19 +1,17 @@
 // Import all dependencies
-import express from 'express';
-import cors from "cors";
-import { ApolloServer } from 'apollo-server-express';
-import { ApolloServerPluginInlineTrace } from "apollo-server-core";
+import express                  from 'express';
+import cors                     from "cors";
+import rateLimit                from 'express-rate-limit';
 
-import { createServer } from 'http';
-import { execute, subscribe } from 'graphql';
-import { SubscriptionServer } from 'subscriptions-transport-ws';
-import { makeExecutableSchema } from '@graphql-tools/schema';
+import { createServer }         from 'http';
+import { execute, subscribe }   from 'graphql';
+import { SubscriptionServer }   from 'subscriptions-transport-ws';
 
-import {AuthMiddleware} from './middlewares/auth';
-import DB from './config/DBContact';
-
-import {schema} from './controler';
-import {schemaDirectives} from './directives';
+// Import all files
+import apolloServer             from './controler/initApolloServer';
+import DB                       from './config/DBContact';
+import {AuthMiddleware}         from './middlewares/auth';
+import {schema}                 from './controler';
 
 // Init an Express App.
 const app = express();
@@ -24,30 +22,21 @@ const httpServer = createServer(app);
 
 // Use your dependencies here
 app.use(express.urlencoded({ extended: true }));
+
 app.use(express.json());
+
+// limit each IP to 100 requests per 15 minutes
+app.use(rateLimit({ windowMs: 15 * 60 * 1000, max: 100}));
 
 app.use(AuthMiddleware);
 
-const server = new ApolloServer({ 
-    schema,
-    plugins: [ApolloServerPluginInlineTrace()],
-    context: ({ req }) => {
-        let {user, isAuth } = req;
-        return {
-            req,
-            user,
-            isAuth
-        };
-    }
-});
+apolloServer.start();
 
-await server.start();
-
-server.applyMiddleware({ app });
+apolloServer.applyMiddleware({ app });
 
 const subscriptionServer = SubscriptionServer.create(
     { schema, execute, subscribe, }, 
-    {server: httpServer, path: server.graphqlPath,}
+    { server: httpServer, path: apolloServer.graphqlPath }
 );
 
 ['SIGINT', 'SIGTERM'].forEach(signal => {
@@ -55,7 +44,7 @@ const subscriptionServer = SubscriptionServer.create(
 });
 
 try {
-    await DB.authenticate();
+    DB.authenticate();
     console.log('Connection has been established successfully.');
 } catch (error) {
     console.error('Unable to connect to the database:', error);
@@ -66,5 +55,5 @@ const PORT = process.env.PORT || 5000;
 
 // Start Server here
 httpServer.listen(PORT,() => {
-    console.log(`Server is running is http://localhost:${PORT}${server.graphqlPath}`);
+    console.log(`Server is running is http://localhost:${PORT}${apolloServer.graphqlPath}`);
 });
