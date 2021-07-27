@@ -5,24 +5,20 @@ export default class IsAuthDirective extends SchemaDirectiveVisitor {
     visitFieldDefinition(field) {
         const { resolve = defaultFieldResolver } = field;
 
-
-        console.log('log visit Field Definition => ', field);
-
+        
+        console.log("IsAuthDirective ============================================> 03");
 
         field.resolve = async function (...args) {
-
             
-            console.log('log field resolve => ', args);
+            console.log("field.resolve ========================================================> 04");
 
-            
+            console.log(args);
             let [_, {}, { user, isAuth }] = args;
             if (isAuth) {
                 const result = await resolve.apply(this, args);
                 return result;
             } else {
-                throw new ApolloError(
-                    'You must be the authenticated user to get this information'
-                );
+                throw new ApolloError( 'You must be the authenticated user to get this information' );
             }
         };
     }

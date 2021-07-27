@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"><!-- Bootstrap CSS -->
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    
+        <title>Test Client Socket</title>
+    </head>
+    <body>
+        <div class="row justify-content-center">
+            <form class="row g-3 col-8" id="form">
+                <div class="col-md-11">
+                    <label for="user_name" class="form-label">user name</label>
+                    <input type="email" class="form-control" id="user_name">
+                </div>
+                <div class="col-md-11">
+                    <label for="password" class="form-label">Password</label>
+                    <input type="password" class="form-control" id="password">
+                </div>
+                <div class="col-11">
+                    <label for="role" class="form-label">role</label>
+                    <input type="text" class="form-control" id="role" >
+                </div>
+                <div class="col-11">
+                    <label for="activation" class="form-label">activation</label>
+                    <input type="text" class="form-control" id="activation" placeholder="Apartment, studio, or floor">
+                </div>
+                <div class="col-md-11">
+                    <label for="id_person" class="form-label">id_person</label>
+                    <input type="text" class="form-control" id="id_person">
+                </div>
+                <div class="col-12">
+                    <button type="button" class="btn btn-primary" onclick="getInputs()">Sign in</button>
+                </div>
+            </form>
+        </div>
+    </body>
+    <!-- Option 1: Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+
+    <script src="./node_modules/socket.io-client/dist/socket.io.js"></script>
+    <script src="./main.js"></script>
+</html>

@@ -14,6 +14,6 @@ export default new Sequelize(
           acquire: 30000,
           idle: 10000
         },
-        logging: console.log,
+        logging: false,
     }
 );

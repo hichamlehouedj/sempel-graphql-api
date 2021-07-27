@@ -5,6 +5,10 @@ import { User, AuthTrace } from '../models';
 const SECRET = "H0675722241h";
 
 export const AuthMiddleware = async (req, res, next) => {
+
+    
+    console.log("AuthMiddleware =====================================> 02");
+
     // Extract Authorization Header
     const authHeader = req.get("Authorization");
 

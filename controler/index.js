@@ -17,6 +17,12 @@ const pubsub = new PubSub();
 const typeDefs = gql`
     scalar Date
 
+    enum Role {
+        ADMIN
+        USER
+        CLIENT
+    }
+
     type Query {
         _empty: String
     }
@@ -87,12 +93,11 @@ const resolvers = {
             )
         },
     }
-
 }
 
 
 export const schema = makeExecutableSchema({
-    typeDefs: [ typeDefs, typeDefsBox, typeDefsClient, typeDefsCompany, typeDefsFactor, typeDefsInvoice, typeDefsPerson, typeDefsUser ],
+    typeDefs: [typeDefs, typeDefsBox, typeDefsClient, typeDefsCompany, typeDefsFactor, typeDefsInvoice, typeDefsPerson, typeDefsUser ],
     resolvers: merge( resolvers, resolversBox, resolversClient, resolversCompany, resolversInvoice, resolversPerson, resolversUser ),
     schemaDirectives: schemaDirectives,
     tracing: true,
@@ -100,7 +105,7 @@ export const schema = makeExecutableSchema({
     introspection: true,
     formatError: (err) => {
         if (err.message.startsWith('Database Error: ')) {
-          return new Error('Internal server error');
+            return new Error('Internal server error');
         }
         return err;
     }
