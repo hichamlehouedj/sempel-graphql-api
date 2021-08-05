@@ -1,4 +1,15 @@
-# graphql-api-v1.0.0
+# 🚀 Welcome to your new awesome project!
 
+This project has been created using **webpack-cli**, you can now run
 
-GraphQL Api Special for Delivery Hash system developed by IT Hash team
+```
+npm run build
+```
+
+or
+
+```
+yarn build
+```
+
+to bundle your application

@@ -8,18 +8,18 @@ import { createServer }         from 'http';
 import { execute, subscribe }   from 'graphql';
 import { SubscriptionServer }   from 'subscriptions-transport-ws';;
 
-import { Server }               from "socket.io";
-
 // Import all files
-import apolloServer             from './controler/initApolloServer';
-import DB                       from './config/DBContact';
-import {AuthMiddleware}         from './middlewares/auth';
-import {schema}                 from './controler';
+import apolloServer             from './src/graphql/initApolloServer';
+import DB                       from './src/config/DBContact';
+import {AuthMiddleware}         from './src/middlewares/auth';
+import {schema}                 from './src/graphql';
+import {Box as boxRoutes} from './src/restFul/routes';
 
 import bcrypt from 'bcryptjs';
+import { issueAuthToken, serializeUser } from './src/helpers';
+import { User } from './src/models';
+import { socketServer } from './src/socket/initSocketServer';
 const { hash, compare } = bcrypt;
-import { issueAuthToken, serializeUser } from './helpers';
-import { User } from './models';
 
 
 // Init an Express App.
@@ -38,6 +38,8 @@ app.use(express.json());
 app.use(rateLimit({ windowMs: 15 * 60 * 1000, max: 100}));
 
 app.use(AuthMiddleware);
+
+app.use('/box', boxRoutes);
 
 apolloServer.start();
 
@@ -78,56 +80,7 @@ try {
 }
 
 
-const io = new Server(httpServer, {
-    cors: ["http://localhost:5500"]
-});
-
-io.on("connection", (socket) => {
-    console.log("new user connected", socket.id);
-
-    socket.on("post-data", async (args) => {
-        console.log(args); // world
-        
-        try {
-
-            let user =  await User.findOne({ where: { user_name: args.user_name } });
-
-            
-            console.log(user);
-            if (user) { return socket.emit("data-respond", 'Username is already Exist.');}
-
-            user =  await User.findOne({ where: { id_person: args.id_person } });
-
-            console.log(user);
-            
-            if (user) { return socket.emit("data-respond", 'Person is already registred.');}
-
-            // Hash the user password
-            let hashPassword = await hash(args.password, 10);
-            
-            let result = await User.create({
-                user_name: args.user_name,
-                password: hashPassword,
-                role: args.role,
-                activation: args.activation,
-                id_person: args.id_person
-            })
-
-            result = await serializeUser(result);
-
-            let token = await issueAuthToken(result);
-
-            return socket.emit("data-respond", {
-                user: result,
-                token: token
-            });
-        } catch (error) {
-            return socket.emit("data-respond", error.message);
-        }
-
-    });
-
-});
+new socketServer(httpServer).connection();
 
 // set port, listen for requests
 const PORT = process.env.PORT || 5000;
