@@ -1,15 +1,15 @@
-# 🚀 Welcome to your new awesome project!
+# 🚀 Welcome to GraphQL Api Special for Delivery Hash system!!!
 
-This project has been created using **webpack-cli**, you can now run
+This project has been created using **IT Hash team**, you can now run
 
 ```
-npm run build
+npm start
 ```
 
 or
 
 ```
-yarn build
+yarn start
 ```
 
-to bundle your application
+to start your application
