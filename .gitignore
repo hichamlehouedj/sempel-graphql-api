@@ -1,6 +1,6 @@
 node_modules
 Doc
 client
-.env
 config/config.js
-logs 
+*.log
+.env
