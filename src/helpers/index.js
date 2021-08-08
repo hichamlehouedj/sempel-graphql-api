@@ -1,12 +1,15 @@
 import jsonwebtoken from 'jsonwebtoken';
 import lodash from 'lodash';
 import nodemailer from 'nodemailer'
+import dotenv from 'dotenv'
+dotenv.config();
 
+const SECRET = process.env.SECRET
 const { pick } = lodash;
 const { sign } = jsonwebtoken;
 
-const SECRET = "H0675722241h";
 
+console.log("SECRET", SECRET);
 const issueAuthToken = async (jwtPayload) => {
     let token = await sign(jwtPayload, SECRET, {
         expiresIn: 3600*24*7

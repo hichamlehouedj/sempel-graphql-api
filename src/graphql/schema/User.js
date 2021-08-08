@@ -2,8 +2,6 @@ import { gql } from 'apollo-server-express';
 
 export const typeDefs = gql`
 
-        directive @isAuth on FIELD_DEFINITION
-
         extend type Query {
                 user(id: ID!): User! @isAuth
                 allUsers: [User!]!

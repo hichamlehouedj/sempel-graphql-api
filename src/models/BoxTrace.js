@@ -10,10 +10,6 @@ export default (db, types) => {
             type: types.STRING(50),
             allowNull: false,
         },
-        type_person: {
-            type: types.STRING(20),
-            allowNull: false,
-        },
         note: {
             type: types.STRING(255),
             allowNull: false
@@ -32,3 +28,11 @@ export default (db, types) => {
         updatedAt: true
     });
 };
+// tace_box {
+//     id_box
+//     status
+//     createAt
+//     id_stock
+//     id_persone (user / factor)
+//     note
+// }

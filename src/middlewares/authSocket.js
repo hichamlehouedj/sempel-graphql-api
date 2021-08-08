@@ -1,8 +1,10 @@
 
 import jwt from 'jsonwebtoken';
 import { User, AuthTrace } from '../models';
+import dotenv from 'dotenv'
+dotenv.config();
 
-const SECRET = "H0675722241h";
+const SECRET = process.env.SECRET
 
 export const AuthMiddleware = async (auth) => {
 

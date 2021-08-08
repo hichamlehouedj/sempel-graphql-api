@@ -15,12 +15,8 @@ import {AuthMiddleware}         from './src/middlewares/auth';
 import {schema}                 from './src/graphql';
 import {Box as boxRoutes} from './src/restFul/routes';
 
-import bcrypt from 'bcryptjs';
-import { issueAuthToken, serializeUser } from './src/helpers';
-import { User } from './src/models';
 import { socketServer } from './src/socket/initSocketServer';
-const { hash, compare } = bcrypt;
-
+import logger from './src/config/logger'
 
 // Init an Express App.
 const app = express();
@@ -45,24 +41,6 @@ apolloServer.start();
 
 apolloServer.applyMiddleware({ app });
 
-Sentry.init({
-    dsn: "https://f7992df690d2407baa8da4fe5693867b@o929759.ingest.sentry.io/5878501",
-    tracesSampleRate: 1.0,
-});
-
-const transaction = Sentry.startTransaction({
-    op: "test",
-    name: "My First Test Transaction",
-});
-
-setTimeout(() => {
-    try { /*foo();*/ } 
-    catch (e) { Sentry.captureException(e); } 
-    finally { transaction.finish(); }
-}, 99);
-
-
-
 const subscriptionServer = SubscriptionServer.create(
     { schema, execute, subscribe, }, 
     { server: httpServer, path: apolloServer.graphqlPath }
@@ -75,7 +53,8 @@ const subscriptionServer = SubscriptionServer.create(
 try {
     DB.authenticate();
     console.log('Connection has been established successfully.');
-} catch (error) {
+} catch (error) { 
+    logger.error(error)
     console.error('Unable to connect to the database:', error);
 }
 
@@ -87,5 +66,6 @@ const PORT = process.env.PORT || 5000;
 
 // Start Server here
 httpServer.listen(PORT,() => {
-    console.log(`Server is running is http://localhost:${PORT}${apolloServer.graphqlPath}`); 
+    logger.info(`Server is running is http://localhost:${PORT}${apolloServer.graphqlPath}`)
+    // console.log(`Server is running is http://localhost:${PORT}${apolloServer.graphqlPath}`);
 });

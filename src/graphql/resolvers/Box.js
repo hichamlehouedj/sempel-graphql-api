@@ -1,19 +1,34 @@
+import { PubSub, PubSubEngine, withFilter } from 'graphql-subscriptions';
 import { User, Box, Client } from '../../models';
+
+const pubsub = new PubSub();
 
 export const resolvers = {
 
         Query: {
                 box:    async (obj, args, context, info) => Box.findByPk(args.id),
-                allBox: async (obj, args, context, info) => Box.findAll(),
+                allBox: async (obj, args, context, info) => Box.findAll({
+                        where: {
+                                id_stock: args.idStock
+                        }
+                }),
         },
 
-        Box: {
-                client: async (obj, args, context, info) => Client.findByPk(obj.id),
-                user:   async (obj, args, context, info) => User.findByPk(obj.id),
-        },
+        // Box: {
+        //         client: async (obj, args, context, info) => Client.findByPk(obj.id),
+        //         user:   async (obj, args, context, info) => User.findByPk(obj.id),
+        // },
 
         Mutation: {
-                
+                createBox: async (obj, {content}, context, info) => {
+                        let box = await Box.create(content)
+
+                        console.log(box);
+
+                        pubsub.publish('BOX_CREATED', { boxCreated: box });
+                        
+                        return box;
+                },
 
                 updateBox: async (obj, args, context, info) => {
                         try {
@@ -41,6 +56,18 @@ export const resolvers = {
                                 throw new ApolloError(error.message)
                         }
                 }
+        },
 
+        Subscription: {
+                boxCreated: {
+                        subscribe: withFilter (
+                                () => pubsub.asyncIterator('BOX_CREATED'),
+                                (payload, variables) => {
+                                        // Only push an update if the comment is on
+                                        // the correct repository for this operation
+                                        return (payload.boxCreated.id_user === variables.idUser);
+                                },
+                        )
+                },
         }
 }

@@ -6,56 +6,84 @@ export default (db, types) => {
             primaryKey: true,
             autoIncrement: true
         },
-        status: {
+        recipient_name: {
             type: types.STRING(50),
             allowNull: false,
         },
-        name_recipient: {
+        recipient_phone1: {
             type: types.STRING(50),
             allowNull: false,
         },
-        phon1_recipient: {
-            type: types.STRING(20),
+        recipient_phone2: {
+            type: types.STRING(50),
             allowNull: false,
         },
-        phon2_recipient: {
-            type: types.STRING(20),
+        recipient_city: {
+            type: types.STRING(50),
             allowNull: false,
         },
-        place_delivery: {
-            type: types.STRING(255),
-            allowNull: false
+        recipient_address: {
+            type: types.STRING(50),
+            allowNull: false,
         },
-        price: {
-            type: types.STRING(20),
-            allowNull: false
+        statu_box: {
+            type: types.STRING(50),
+            allowNull: false,
         },
-        code_order: {
-            type: types.STRING(20),
-            allowNull: false
+        code_box: {
+            type: types.STRING(50),
+            allowNull: false,
         },
-        number_Receipt: {
-            type: types.STRING(20),
-            allowNull: false
+        content_box: {
+            type: types.STRING(50),
+            allowNull: false,
         },
-        createdAt: {
-            type: types.DATE,
-            allowNull: false
+        number_of_pieces_inside_the_box: {
+            type: types.INTEGER(11),
+            allowNull: false,
         },
-        updatedAt: {
-            type: types.DATE,
-            allowNull: false
+        number_box: {
+            type: types.STRING(50),
+            allowNull: false,
+        },
+        payment_type: {
+            type: types.STRING(50),
+            allowNull: false,
+        },
+        height_box: {
+            type: types.STRING(50),
+            allowNull: false,
+        },
+        width_box: {
+            type: types.STRING(50),
+            allowNull: false,
+        },
+        weight_box: {
+            type: types.STRING(50),
+            allowNull: false,
+        },
+        price_box: {
+            type: types.DOUBLE,
+            allowNull: false,
+        },
+        price_delivery: {
+            type: types.DOUBLE,
+            allowNull: false,
+        },
+        TVA: {
+            type: types.INTEGER(11),
+            allowNull: false,
         },
         note: {
-            type: types.STRING(6),
-            allowNull: false
-        },
+            type: types.STRING(50),
+            allowNull: false,
+        }
     }, {
         timestamps: true,
-        createdAt: true,
-        updatedAt: true,
+        date_create: true,
+        date_update: true,
         indexes: [
-            {unique: true, fields: ['code_order'] }
+            {unique: true, fields: ['code_box'] }
         ]
     });
 };

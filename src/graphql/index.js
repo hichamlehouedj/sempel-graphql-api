@@ -2,20 +2,17 @@ import lodash from 'lodash';
 import { GraphQLScalarType } from 'graphql';
 import { Kind } from 'graphql/language';
 import { gql, makeExecutableSchema } from 'apollo-server';
-import { PubSub, PubSubEngine, withFilter } from 'graphql-subscriptions';
 
 import {schemaDirectives} from './directives';
 
-import {typeDefsBox, typeDefsClient, typeDefsCompany, typeDefsFactor, typeDefsInvoice, typeDefsPerson, typeDefsUser} from './schema';
-import {resolversBox, resolversClient, resolversCompany, resolversInvoice, resolversPerson, resolversUser} from './resolvers'
-import { Box } from '../models';
+import {typeDefsBox, typeDefsClient, typeDefsCompany, typeDefsFactor, typeDefsInvoice, typeDefsPerson, typeDefsUser, typeDefsBoxTrace, typeDefsStock} from './schema';
+import {resolversBox, resolversBoxTrace, resolversClient, resolversCompany, resolversInvoice, resolversPerson, resolversUser, resolversStock} from './resolvers'
 
 const { merge } = lodash;
 
-const pubsub = new PubSub();
-
 const typeDefs = gql`
     scalar Date
+    directive @isAuth on FIELD_DEFINITION
     directive @hasRole(requires: Role! ) on FIELD_DEFINITION
     
     enum Role {
@@ -33,7 +30,7 @@ const typeDefs = gql`
     }
 
     type Subscription {
-        boxCreated(idUser: Int!): Box
+        _empty: String
     }
 
 
@@ -56,50 +53,21 @@ const resolvers = {
             if (ast.kind === Kind.INT) { return parseInt(ast.value, 10); }
             return null;
         },
-    }),
-
-    Mutation: {
-        createBox: async (obj, args, context, info) => {
-
-
-            let box = await Box.create({
-                status:             args.status,
-                name_recipient:     args.name_recipient,
-                phon1_recipient:    args.phon1_recipient,
-                phon2_recipient:    args.phon2_recipient,
-                place_delivery:     args.place_delivery,
-                price:              args.price,
-                code_order:         args.code_order,
-                number_Receipt:     args.number_Receipt,
-                note:               args.note,
-                id_client:          args.id_client,
-                id_user:            args.id_user
-            })
-
-            pubsub.publish('BOX_CREATED', { boxCreated: box });
-            
-            return box;
-        }
-    },
-
-    Subscription: {
-        boxCreated: {
-            subscribe: withFilter (
-                () => pubsub.asyncIterator('BOX_CREATED'),
-                (payload, variables) => {
-                    // Only push an update if the comment is on
-                    // the correct repository for this operation
-                    return (payload.boxCreated.id_user === variables.idUser);
-                },
-            )
-        },
-    }
+    })
 }
 
 
 export const schema = makeExecutableSchema({
-    typeDefs: [typeDefs, typeDefsBox, typeDefsClient, typeDefsCompany, typeDefsFactor, typeDefsInvoice, typeDefsPerson, typeDefsUser ],
-    resolvers: merge( resolvers, resolversBox, resolversClient, resolversCompany, resolversInvoice, resolversPerson, resolversUser ),
+    typeDefs: [
+        typeDefs, typeDefsBox, typeDefsClient, typeDefsCompany, 
+        typeDefsFactor, typeDefsInvoice, typeDefsPerson, 
+        typeDefsUser, typeDefsBoxTrace, typeDefsStock
+    ],
+    resolvers: merge( 
+        resolvers, resolversBox, resolversClient, 
+        resolversCompany, resolversInvoice, resolversPerson, 
+        resolversUser, resolversBoxTrace, resolversStock 
+    ),
     schemaDirectives: schemaDirectives,
     tracing: true,
     playground: true,
