@@ -19,10 +19,10 @@ export const typeDefs = gql`
     # }
 
     type Stock {
-        id:                                 ID!
-        createdAt:                          Date
-        updateAt:                           Date
-        id_company:                         Int
+        id:          ID!
+        createdAt:   Date
+        updateAt:    Date
+        company:     Company
     }
 
     input stockContent {

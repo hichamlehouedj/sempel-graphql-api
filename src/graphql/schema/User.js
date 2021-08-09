@@ -4,6 +4,7 @@ export const typeDefs = gql`
 
         extend type Query {
                 user(id: ID!): User! @isAuth
+                currentUser: User! @isAuth
                 allUsers: [User!]!
                 allUsersBy(option: String): [User!]!
                 allUsersLimitedBy(offset: Int!,  limit: Int!, option: String): [User!]!

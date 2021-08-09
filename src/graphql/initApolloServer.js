@@ -1,6 +1,5 @@
 // Import all dependencies
 import { ApolloServer }                     from 'apollo-server-express';
-import { ApolloServerPluginInlineTrace }    from "apollo-server-core";
 import depthLimit                           from 'graphql-depth-limit';
 import queryComplexity, { simpleEstimator } from 'graphql-query-complexity';
 import { GraphQLError }                     from 'graphql';
@@ -26,7 +25,6 @@ const apolloServer = new ApolloServer({
         depthLimit(3),
         queryComplexityRule
     ],
-    plugins: [ApolloServerPluginInlineTrace()],
     context: ({ req }) => {
         let {user, isAuth } = req;
         return {

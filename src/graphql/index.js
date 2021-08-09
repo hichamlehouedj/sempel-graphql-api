@@ -2,6 +2,7 @@ import lodash from 'lodash';
 import { GraphQLScalarType } from 'graphql';
 import { Kind } from 'graphql/language';
 import { gql, makeExecutableSchema } from 'apollo-server';
+import {createRateLimitTypeDef} from 'graphql-rate-limit-directive';
 
 import {schemaDirectives} from './directives';
 
@@ -21,7 +22,7 @@ const typeDefs = gql`
         CLIENT
     }
 
-    type Query {
+    type Query @rateLimit {
         _empty: String
     }
 
@@ -59,7 +60,7 @@ const resolvers = {
 
 export const schema = makeExecutableSchema({
     typeDefs: [
-        typeDefs, typeDefsBox, typeDefsClient, typeDefsCompany, 
+        createRateLimitTypeDef(), typeDefs, typeDefsBox, typeDefsClient, typeDefsCompany, 
         typeDefsFactor, typeDefsInvoice, typeDefsPerson, 
         typeDefsUser, typeDefsBoxTrace, typeDefsStock
     ],

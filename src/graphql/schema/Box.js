@@ -8,14 +8,14 @@ export const typeDefs = gql`
 
     extend type Mutation {
         createBox (content: boxContent!): Box
-        
+
         updateBox (id: Int!, content: boxContent!): statusUpdate
 
         deleteBox ( id: Int! ): statusDelete
     }
 
     extend type Subscription {
-        boxCreated(idUser: Int!): Box
+        boxCreated(idStock: Int!): Box
     }
 
     type Box {
@@ -40,8 +40,9 @@ export const typeDefs = gql`
         note:                               String
         createdAt:                          Date
         updateAt:                           Date
-        id_stock:                           Int
-        id_client:                          Int
+        stock:                              Stock
+        client:                             Client
+        lastTrace:                          [BoxTrace]!
     }
 
     input boxContent {

@@ -31,7 +31,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
 // limit each IP to 100 requests per 15 minutes
-app.use(rateLimit({ windowMs: 15 * 60 * 1000, max: 100}));
+app.use(rateLimit({ windowMs: 15 * 60 * 1000, max: 1000}));
 
 app.use(AuthMiddleware);
 

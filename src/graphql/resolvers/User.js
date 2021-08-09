@@ -14,6 +14,13 @@ export const resolvers = {
         Query: {
                 user:           async (obj, args, context, info) => User.findByPk(args.id),
 
+                currentUser: async (obj, args, context, info) => {
+                        if (context.isAuth) {
+                                return context.user
+                        }
+                        return "You must be the authenticated user to get this information";
+                },
+
                 allUsers:       async (obj, args, context, info) => User.findAll(),
 
                 allUsersBy:       async (obj, args, context, info) => User.findAll({
