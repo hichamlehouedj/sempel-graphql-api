@@ -1,10 +1,10 @@
 export default (db, types) => {
 	return db.define('box', {
         id: {
-            type: types.INTEGER(11),
+            type: types.UUID,
+            defaultValue: types.UUIDV4,
             allowNull: false,
-            primaryKey: true,
-            autoIncrement: true
+            primaryKey: true
         },
         recipient_name: {
             type: types.STRING(50),
@@ -23,10 +23,6 @@ export default (db, types) => {
             allowNull: false,
         },
         recipient_address: {
-            type: types.STRING(50),
-            allowNull: false,
-        },
-        statu_box: {
             type: types.STRING(50),
             allowNull: false,
         },
@@ -77,6 +73,10 @@ export default (db, types) => {
         note: {
             type: types.STRING(50),
             allowNull: false,
+        },
+        id_stock: {
+            type: types.STRING(50),
+            allowNull: false
         }
     }, {
         timestamps: true,

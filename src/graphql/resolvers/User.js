@@ -75,11 +75,11 @@ export const resolvers = {
                                 // Issue Token
                                 let token = await issueAuthToken(user);
 
-                                await createMail ({
-                                        to: "hicham55lehouedj@gmail.com",
-                                        subject: "Email Verification",
-                                        text: token
-                                });
+                                // await createMail ({
+                                //         to: "hicham55lehouedj@gmail.com",
+                                //         subject: "Email Verification",
+                                //         text: token
+                                // });
 
                                 return {
                                         user,
@@ -111,6 +111,8 @@ export const resolvers = {
                                         activation: args.activation,
                                         id_person: args.id_person
                                 })
+
+                                console.log(result);
 
                                 result = await serializeUser(result);
 

@@ -2,7 +2,9 @@
 import express                  from 'express';
 import cors                     from "cors";
 import rateLimit                from 'express-rate-limit';
-import * as Sentry              from '@sentry/node';
+import helmet                   from 'helmet';
+import expressDefend            from 'express-defend';
+// import session                  from 'express-session';
 
 import { createServer }         from 'http';
 import { execute, subscribe }   from 'graphql';
@@ -13,10 +15,9 @@ import apolloServer             from './src/graphql/initApolloServer';
 import DB                       from './src/config/DBContact';
 import {AuthMiddleware}         from './src/middlewares/auth';
 import {schema}                 from './src/graphql';
-import {Box as boxRoutes} from './src/restFul/routes';
 
-import { socketServer } from './src/socket/initSocketServer';
-import logger from './src/config/logger'
+import { socketServer }         from './src/socket/initSocketServer';
+import logger                   from './src/config/logger';
 
 // Init an Express App.
 const app = express();
@@ -30,12 +31,29 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use(express.json());
 
+app.use(helmet({ contentSecurityPolicy: (process.env.NODE_ENV === 'production') ? undefined : false }));
+
+app.use(expressDefend.protect({ 
+    maxAttempts: 5,                   // (default: 5) number of attempts until "onMaxAttemptsReached" gets triggered
+    dropSuspiciousRequest: true,      // respond 403 Forbidden when max attempts count is reached
+    consoleLogging: true,             // (default: true) enable console logging
+    logFile: 'suspicious.log',        // if specified, express-defend will log it's output here
+    onMaxAttemptsReached: function(ipAddress, url){
+        console.log('IP address ' + ipAddress + ' is considered to be malicious, URL: ' + url);
+    } 
+}));
+
+// app.use(session({ 
+//     secret: process.env.SECRET, 
+//     resave: true, 
+//     saveUninitialized: true, 
+//     cookie: { maxAge: 3600 * 24 * 7 } 
+// }));
+
 // limit each IP to 100 requests per 15 minutes
-app.use(rateLimit({ windowMs: 15 * 60 * 1000, max: 1000}));
+app.use(rateLimit({ windowMs: 15 * 60 * 1000, max: 100}));
 
 app.use(AuthMiddleware);
-
-app.use('/box', boxRoutes);
 
 apolloServer.start();
 

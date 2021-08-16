@@ -1,12 +1,36 @@
 import { ApolloError } from 'apollo-server';
 
-import { Person, Client } from '../../models';
+import { Person, Client, StockAccess, Stock } from '../../models';
 
 export const resolvers = {
 
         Query: {
                 client:           async (obj, args, context, info) => Client.findByPk(args.id),
-                allClients:       async (obj, args, context, info) => Client.findAll(),
+                allClientsStock:       async (obj, args, context, info) => {
+                        let cl = await Client.findAll({
+                                where: {
+                                        '$person->stock_accesses.id_stock$': args.idStock
+                                },
+                                include: {
+                                        model: Person,
+                                        as: 'person',
+
+                                        include: {
+                                                model: StockAccess,
+                                                as: 'stock_accesses',
+                                                required: true
+                                        },
+                                        required: true
+                                }
+                        })
+                        console.log("\n\n\ncl", cl, "\n\n\n");
+                        return cl;
+                },
+                allClientsCompany:       async (obj, args, context, info) => Client.findAll({
+                        where: {
+                                id_stock: args.idStock
+                        }
+                }),
         },
 
         Client: {

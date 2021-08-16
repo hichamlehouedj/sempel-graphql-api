@@ -1,5 +1,5 @@
 import { ApolloError } from 'apollo-server';
-import { Company, Person } from '../../models';
+import { Company, Person, Stock, StockAccess } from '../../models';
 
 
 export const resolvers = {
@@ -11,6 +11,19 @@ export const resolvers = {
 
         Person: {
                 company: async (obj, args, context, info) => Company.findByPk(obj.id_company),
+                list_stock_accesses: async (obj, args, context, info) => await StockAccess.findAll({
+                        where: {
+                                id_person: obj.id
+                        }
+                })
+        },
+
+        StockAccess: {
+                stock: async (obj, args, context, info) => await Stock.findAll({
+                        where: {
+                                id: obj.id_stock
+                        }
+                })
         },
 
         Mutation: {

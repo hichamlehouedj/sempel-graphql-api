@@ -34,4 +34,15 @@ export const typeDefs = gql`
         company:        Company!
         admin:          User!
     }
+
+    input contentCompany {
+        name:           String
+        logo:           String
+        phone01:        String
+        phone02:        String
+        email:          String
+        url_site:       String
+        address:        String
+        activation:     String
+    }
 `;

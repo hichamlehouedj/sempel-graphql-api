@@ -1,3 +1,4 @@
+import { ApolloError } from 'apollo-server';
 import { PubSub, PubSubEngine, withFilter } from 'graphql-subscriptions';
 import { Box, BoxTrace, Client, Stock } from '../../models';
 const pubsub = new PubSub();
@@ -13,8 +14,18 @@ export const resolvers = {
     },
 
     Box: {
-        stock: async (obj, args, context, info) => Stock.findByPk(obj.id),
-        client:async (obj, args, context, info) => Client.findByPk(obj.id),
+        stock: async (obj, args, context, info) => Stock.findByPk(obj.id_stock),
+        client:async (obj, args, context, info) => {
+            try {
+                let clients = await Client.findByPk(obj.id_client);
+                if (clients === null || clients === undefined) {
+                    return []
+                }
+                return [clients]
+            } catch (error) {
+                throw new ApolloError(error.message)
+            }
+        },
         lastTrace: async (obj, args, context, info) => BoxTrace.findAll({
             where: {
                 id_box: obj.id
@@ -22,22 +33,45 @@ export const resolvers = {
             order: [['createdAt', 'DESC']],
             limit: 1
         }),
+        traceBox: async (obj, args, context, info) => BoxTrace.findAll({
+            where: {
+                id_box: obj.id
+            },
+            order: [['createdAt', 'DESC']]
+        }),
     },
 
     Mutation: {
         createBox: async (obj, {content}, context, info) => {
-            let box = await Box.create(content)
 
-            pubsub.publish('BOX_CREATED', { boxCreated: box });
+            let box = await Box.create(content)
+        
+            let id_box = box["dataValues"].id;
+            
+            await BoxTrace.create({
+                status:         content.statu_box,
+                note:           content.note,
+                id_stock:       content.id_stock,
+                id_person:      content.id_person,
+                id_box:         id_box
+            })
+
+            //pubsub.publish('BOX_CREATED', { boxCreated: box });
 
             return box;
         },
 
-        updateBox: async (obj, args, context, info) => {
+        updateBox: async (obj, {id, content, noteTrace}, context, info) => {
             try {
-                const id = args.id || null;
-                delete args.id;
-                let result = await Box.update(args, { where: { id: id } })
+                let result = await Box.update(content, { where: { id: id } })
+
+                await BoxTrace.create({
+                    status:         content.statu_box,
+                    note:           noteTrace,
+                    id_stock:       content.id_stock,
+                    id_person:      content.id_person,
+                    id_box:         id
+                })
 
                 return {
                     status: result[0] === 1 ? true : false

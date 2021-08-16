@@ -7,9 +7,9 @@ export const typeDefs = gql`
     }
 
     extend type Mutation {
-        createBox (content: boxContent!): Box
+        createBox (content: boxContent!): Box @rateLimit
 
-        updateBox (id: Int!, content: boxContent!): statusUpdate
+        updateBox (id: Int!, content: boxContent!, noteTrace: String): statusUpdate
 
         deleteBox ( id: Int! ): statusDelete
     }
@@ -38,11 +38,12 @@ export const typeDefs = gql`
         price_delivery:                     Float
         TVA:                                Int
         note:                               String
-        createdAt:                          Date
-        updateAt:                           Date
+        createdAt:                          Date @date(defaultFormat: "dd/mm/yyyy HH:MM:ss")
+        updateAt:                           Date @date(defaultFormat: "dd/mm/yyyy HH:MM:ss")
         stock:                              Stock
-        client:                             Client
+        client:                             [Client]!
         lastTrace:                          [BoxTrace]!
+        traceBox:                           [BoxTrace]!
     }
 
     input boxContent {
@@ -64,7 +65,8 @@ export const typeDefs = gql`
         price_delivery:                     Float
         TVA:                                Int
         note:                               String
-        id_stock:                           Int
-        id_client:                          Int
+        id_stock:                           Int!
+        id_client:                          Int!
+        id_person:                          Int!
     }
 `;

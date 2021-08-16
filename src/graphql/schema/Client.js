@@ -3,12 +3,13 @@ import { gql } from 'apollo-server-express';
 export const typeDefs = gql`
         extend type Query {
                 client(id: ID!): Client!
-                allClients: [Client!]!
+                allClientsStock(idStock: ID!): [Client!]!
+                allClientsCompany(idCompany: ID!): [Client!]!
         }
 
         extend type Mutation {
-                createClient (first_name: String, last_name: String, email: String, phone01: String, phone02: String, address: String, id_company: Int): Client
-                updateClient (id_person: Int!, first_name: String, last_name: String, email: String, phone01: String, phone02: String, address: String, id_company: Int): statusUpdate
+                createClient (content: contentClient!): Client
+                updateClient (id: Int!, content: contentClient!): statusUpdate
                 deleteClient ( id: Int! ): statusDelete
         }
 
@@ -18,4 +19,7 @@ export const typeDefs = gql`
                 person: Person
         }
 
+        input contentClient {
+                person: contentPerson
+        }
 `;

@@ -33,47 +33,52 @@ const StockAccess =     stockAccessModel(DB, Sequelize);
 // Relationships between tables
 
 // Company 1 * Invoice
-Company.hasOne(Invoice, { foreignKey: { name: 'id_company' } })
-
-// Company 1 * Person
-// Company.hasOne(Person, { foreignKey: { name: 'id_company' } })
+Company.hasMany(Invoice, { foreignKey: { name: 'id_company' }, onDelete: 'CASCADE', onUpdate: 'CASCADE'  })
+Invoice.belongsTo(Company, { foreignKey: { name: 'id_company' }, onDelete: 'CASCADE', onUpdate: 'CASCADE'  })
 
 // Company 1 * AuthTrace
-Company.hasOne(AuthTrace, { foreignKey: { name: 'id_company' } })
+Company.hasMany(AuthTrace, { foreignKey: { name: 'id_company' }, onDelete: 'CASCADE', onUpdate: 'CASCADE'  })
+AuthTrace.belongsTo(Company, { foreignKey: { name: 'id_company' }, onDelete: 'CASCADE', onUpdate: 'CASCADE'  })
 
 // Company 1 * Stock
-Company.hasOne(Stock, { foreignKey: { name: 'id_company' } })
+Company.hasMany(Stock, { foreignKey: { name: 'id_company' }, onDelete: 'CASCADE', onUpdate: 'CASCADE'  })
+Stock.belongsTo(Company, { foreignKey: { name: 'id_company' }, onDelete: 'CASCADE', onUpdate: 'CASCADE'  })
 
-// Person 1 0 User
-Person.hasOne(User, { foreignKey: { name: 'id_person' } })
+// Person 1 1 User
+Person.hasOne(User, { foreignKey: { name: 'id_person' }, onDelete: 'CASCADE', onUpdate: 'CASCADE' })
+User.belongsTo(Person, { foreignKey: { name: 'id_person' }, onDelete: 'CASCADE', onUpdate: 'CASCADE'  });
 
-// Person 1 0 Client 
-Person.hasOne(Client, { foreignKey: { name: 'id_person' } })
+// Person 1 1 Client 
+Person.hasOne(Client, { foreignKey: { name: 'id_person' }, onDelete: 'CASCADE', onUpdate: 'CASCADE'  })
+Client.belongsTo(Person, { foreignKey: { name: 'id_person' }, onDelete: 'CASCADE', onUpdate: 'CASCADE'  });
 
-// Person 1 0 Factor
-Person.hasOne(Factor, { foreignKey: { name: 'id_person' } })
-
-// Stock 1 * Box
-Stock.hasOne(Box, { foreignKey: { name: 'id_stock' } })
-
-// Client 1 * Box
-Client.hasOne(Box, { foreignKey: { name: 'id_client' } })
+// Person 1 1 Factor
+Person.hasOne(Factor, { foreignKey: { name: 'id_person' }, onDelete: 'CASCADE', onUpdate: 'CASCADE'  })
+Factor.belongsTo(Person, { foreignKey: { name: 'id_person' }, onDelete: 'CASCADE', onUpdate: 'CASCADE'  });
 
 // Client 1 * Box
-Box.hasOne(BoxTrace, { foreignKey: { name: 'id_box' } })
+Client.hasMany(Box, { foreignKey: { name: 'id_client' }, onDelete: 'CASCADE', onUpdate: 'CASCADE'  })
+Box.belongsTo(Client, { foreignKey: { name: 'id_client' }, onDelete: 'CASCADE', onUpdate: 'CASCADE'  })
+
+// Client 1 * Box
+Box.hasMany(BoxTrace, { foreignKey: { name: 'id_box' }, onDelete: 'CASCADE', onUpdate: 'CASCADE'  })
+BoxTrace.belongsTo(Box, { foreignKey: { name: 'id_box' }, onDelete: 'CASCADE', onUpdate: 'CASCADE'  })
 
 // Stock 1 * BoxTrace
-Stock.hasOne(BoxTrace, { foreignKey: { name: 'id_stock' } })
+Stock.hasMany(BoxTrace, { foreignKey: { name: 'id_stock' }, onDelete: 'CASCADE', onUpdate: 'CASCADE'  })
+BoxTrace.belongsTo(Stock, { foreignKey: { name: 'id_stock' }, onDelete: 'CASCADE', onUpdate: 'CASCADE'  })
 
 // Person 1 * BoxTrace
-Person.hasOne(BoxTrace, { foreignKey: { name: 'id_person' } })
+Person.hasMany(BoxTrace, { foreignKey: { name: 'id_person' }, onDelete: 'CASCADE', onUpdate: 'CASCADE'  })
+BoxTrace.belongsTo(Person, { foreignKey: { name: 'id_person' }, onDelete: 'CASCADE', onUpdate: 'CASCADE'  })
 
 // Stock 1 * BoxTrace
-Stock.hasOne(StockAccess, { foreignKey: { name: 'id_stock' } })
+Stock.hasMany(StockAccess, { foreignKey: { name: 'id_stock' }, onDelete: 'CASCADE', onUpdate: 'CASCADE'  })
+StockAccess.belongsTo(Stock, { foreignKey: { name: 'id_stock' }, onDelete: 'CASCADE', onUpdate: 'CASCADE'  })
 
 // Person 1 * BoxTrace
-Person.hasOne(StockAccess, { foreignKey: { name: 'id_person' } })
-
+Person.hasMany(StockAccess, { foreignKey: { name: 'id_person' }, onDelete: 'CASCADE', onUpdate: 'CASCADE'  })
+StockAccess.belongsTo(Person, { foreignKey: { name: 'id_person' }, onDelete: 'CASCADE', onUpdate: 'CASCADE'  })
 
 
 

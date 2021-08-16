@@ -9,7 +9,6 @@ const { pick } = lodash;
 const { sign } = jsonwebtoken;
 
 
-console.log("SECRET", SECRET);
 const issueAuthToken = async (jwtPayload) => {
     let token = await sign(jwtPayload, SECRET, {
         expiresIn: 3600*24*7

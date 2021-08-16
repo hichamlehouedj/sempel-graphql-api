@@ -7,7 +7,7 @@ import { GraphQLError }                     from 'graphql';
 import {schema}                             from '.';
 
 
-const queryComplexityRule = queryComplexity.default({
+const queryComplexityRule = queryComplexity({
     maximumComplexity: 1000,
     variables: {},
     // eslint-disable-next-line no-console

@@ -13,8 +13,9 @@ const { merge } = lodash;
 
 const typeDefs = gql`
     scalar Date
+    directive @date(defaultFormat: String = "dd/mm/yyyy HH:MM:ss") on FIELD_DEFINITION
     directive @isAuth on FIELD_DEFINITION
-    directive @hasRole(requires: Role! ) on FIELD_DEFINITION
+    directive @hasRole(requires: [Role!] ) on FIELD_DEFINITION
     
     enum Role {
         ADMIN
@@ -77,6 +78,7 @@ export const schema = makeExecutableSchema({
         if (err.message.startsWith('Database Error: ')) {
             return new Error('Internal server error');
         }
+        
         return err;
     }
 });
