@@ -31,6 +31,11 @@ export default (db, types) => {
             type: types.STRING(50),
             allowNull: false
         },
+        deleted: {
+            type: types.BOOLEAN,
+            defaultValue: false,
+            allowNull: false
+        },
         createdAt: {
             type: types.DATE,
             allowNull: false

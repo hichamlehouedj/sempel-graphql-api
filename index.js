@@ -3,7 +3,7 @@ import express                  from 'express';
 import cors                     from "cors";
 import rateLimit                from 'express-rate-limit';
 import helmet                   from 'helmet';
-import expressDefend            from 'express-defend';
+import cookieParser             from 'cookie-parser';
 // import session                  from 'express-session';
 
 import { createServer }         from 'http';
@@ -18,10 +18,18 @@ import {schema}                 from './src/graphql';
 
 import { socketServer }         from './src/socket/initSocketServer';
 import logger                   from './src/config/logger';
+import { express as expressUserAgent } from 'express-useragent';
 
 // Init an Express App.
 const app = express();
-app.use(cors());
+app.use(cors({
+    origin: 'http://localhost:4000',
+    credentials: true
+}));
+
+app.use(cookieParser())
+
+app.use(expressUserAgent());
 
 // This `app` is the returned value from `express()`.
 const httpServer = createServer(app);
@@ -32,16 +40,6 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
 app.use(helmet({ contentSecurityPolicy: (process.env.NODE_ENV === 'production') ? undefined : false }));
-
-app.use(expressDefend.protect({ 
-    maxAttempts: 5,                   // (default: 5) number of attempts until "onMaxAttemptsReached" gets triggered
-    dropSuspiciousRequest: true,      // respond 403 Forbidden when max attempts count is reached
-    consoleLogging: true,             // (default: true) enable console logging
-    logFile: 'suspicious.log',        // if specified, express-defend will log it's output here
-    onMaxAttemptsReached: function(ipAddress, url){
-        console.log('IP address ' + ipAddress + ' is considered to be malicious, URL: ' + url);
-    } 
-}));
 
 // app.use(session({ 
 //     secret: process.env.SECRET, 
@@ -77,7 +75,7 @@ try {
 }
 
 
-new socketServer(httpServer).connection();
+//new socketServer(httpServer).connection();
 
 // set port, listen for requests
 const PORT = process.env.PORT || 5000;

@@ -7,8 +7,8 @@ export const typeDefs = gql`
     }
 
     extend type Mutation {
-        createPerson (first_name: String, last_name: String, email: String, phone01: String, phone02: String, address: String, id_company: Int!): Person
-        updatePerson (id: Int!, first_name: String, last_name: String, email: String, phone01: String, phone02: String, address: String, id_company: Int!): statusUpdate
+        createPerson (content: contentPerson!): Person
+        updatePerson (id: Int!, content: contentPerson!): statusUpdate
         deletePerson (id: Int!): statusDelete
     }
 
@@ -20,6 +20,7 @@ export const typeDefs = gql`
         phone01:                String
         phone02:                String
         address:                String
+        deleted:                Boolean
         createdAt:              Date @date(defaultFormat: "dd/mm/yyyy HH:MM:ss")
         updatedAt:              Date @date(defaultFormat: "dd/mm/yyyy HH:MM:ss")
         list_stock_accesses:    [StockAccess!]
@@ -41,6 +42,6 @@ export const typeDefs = gql`
         phone01:        String
         phone02:        String
         address:        String
-        company:        contentCompany
+        id_stock:       ID
     }
 `;

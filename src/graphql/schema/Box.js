@@ -4,6 +4,7 @@ export const typeDefs = gql`
     extend type Query {
         box(id: ID!): Box!
         allBox(idStock: ID!): [Box!]
+        boxClient(idClient: ID!): [Box!]
     }
 
     extend type Mutation {

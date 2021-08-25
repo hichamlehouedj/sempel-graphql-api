@@ -27,15 +27,15 @@ export const resolvers = {
         },
 
         Mutation: {
-                createPerson: async (obj, args, context, info) =>  await Person.create({
-                        first_name: args.first_name,
-                        last_name: args.last_name,
-                        email: args.email,
-                        phone01: args.phone01,
-                        phone02: args.phone02,
-                        address: args.address,
-                        id_company: args.id_company
-                }),
+                createPerson: async (obj, {content}, context, info) =>  {
+                        let person = await Person.create(content)
+                        await StockAccess.create({
+                                id_stock: content.id_stock, 
+                                id_person: person.id
+                        })
+
+                        return person
+                },
 
                 updatePerson: async (obj, args, context, info) => {
                         try {

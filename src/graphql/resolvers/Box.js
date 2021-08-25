@@ -10,6 +10,11 @@ export const resolvers = {
             where: {
                 id_stock: args.idStock
             }
+        }),
+        boxClient: async (obj, args, context, info) => Box.findAll({
+            where: {
+                id_client: args.idClient
+            }
         })
     },
 

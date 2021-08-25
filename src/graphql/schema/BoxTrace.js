@@ -14,10 +14,6 @@ export const typeDefs = gql`
         deleteBoxTrace ( id: Int! ): statusDelete
     }
 
-    # extend type Subscription {
-    #     boxCreated(idUser: Int!): Box
-    # }
-
     type BoxTrace {
         id:             ID
         status:         String

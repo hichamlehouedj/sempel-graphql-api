@@ -2,6 +2,7 @@ import jsonwebtoken from 'jsonwebtoken';
 import lodash from 'lodash';
 import nodemailer from 'nodemailer'
 import dotenv from 'dotenv'
+import { uid, suid } from 'rand-token';
 dotenv.config();
 
 const SECRET = process.env.SECRET
@@ -11,7 +12,7 @@ const { sign } = jsonwebtoken;
 
 const issueAuthToken = async (jwtPayload) => {
     let token = await sign(jwtPayload, SECRET, {
-        expiresIn: 3600*24*7
+        expiresIn: 60*5
     });
     return `Bearer ${token}`;
 };
@@ -68,9 +69,17 @@ const createMail = async (mail) => {
     }
 };
 
+const getRefreshToken = async (payload) => {
+    let token = await sign(payload, SECRET, {
+        expiresIn: 3600*24*7
+    });
 
+    return token;
+}
 
-
-
-
-export { issueAuthToken, serializeUser, createMail }
+export {
+    issueAuthToken,
+    serializeUser,
+    createMail,
+    getRefreshToken
+}

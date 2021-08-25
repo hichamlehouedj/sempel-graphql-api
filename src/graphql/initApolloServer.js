@@ -25,12 +25,16 @@ const apolloServer = new ApolloServer({
         depthLimit(3),
         queryComplexityRule
     ],
-    context: ({ req }) => {
+    context: ({ req, res }) => {
         let {user, isAuth } = req;
+        let refreshToken = req.cookies["___refresh_token"];
+
         return {
+            res,
             req,
             user,
-            isAuth
+            isAuth,
+            refreshToken
         };
     }
 });

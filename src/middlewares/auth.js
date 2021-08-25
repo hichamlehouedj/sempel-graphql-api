@@ -19,7 +19,6 @@ export const AuthMiddleware = async (req, res, next) => {
         return next();
     }
 
-    
     // Extract the token and check for token
     const token = authHeader.split(" ")[1];
 
@@ -50,7 +49,7 @@ export const AuthMiddleware = async (req, res, next) => {
         return next();
     }
 
-    await AuthTrace.create({token : token, user_name: decodedToken.user_name, action: "Token Checked" })
+    await AuthTrace.create({token : token, user_name: authUser.user_name, action: "Token Checked" })
 
     req.isAuth = true;
     req.user = authUser;

@@ -19,7 +19,8 @@ export default (db, types) => {
             allowNull: false
         },
         activation: {
-            type: types.STRING(6),
+            type: types.STRING(10),
+            defaultValue: "desactive",
             allowNull: false
         },
     }, {
