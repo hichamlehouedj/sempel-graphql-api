@@ -1,7 +1,7 @@
 {
-  "name": "sempel-graphql-api",
+  "name": "simpel-graphql-api",
   "version": "1.0.0",
-  "description": "Sempel GraphQL Api developed by IT Hash team",
+  "description": "Simpel GraphQL Api developed by IT Hash team",
   "main": "index.js",
   "private": true,
   "scripts": {
