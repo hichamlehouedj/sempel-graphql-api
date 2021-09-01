@@ -4,6 +4,8 @@ import depthLimit                           from 'graphql-depth-limit';
 import queryComplexity, { simpleEstimator } from 'graphql-query-complexity';
 import { GraphQLError }                     from 'graphql';
 
+import { ApolloServerPluginLandingPageGraphQLPlayground } from 'apollo-server-core';
+
 import {schema}                             from '.';
 
 
@@ -25,10 +27,10 @@ const apolloServer = new ApolloServer({
         depthLimit(3),
         queryComplexityRule
     ],
+    plugins: [ ApolloServerPluginLandingPageGraphQLPlayground({ settings: { 'request.credentials': 'include' } }) ],
     context: ({ req, res }) => {
         let {user, isAuth } = req;
         let refreshToken = req.cookies["___refresh_token"];
-
         return {
             res,
             req,

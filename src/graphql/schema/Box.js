@@ -4,19 +4,18 @@ export const typeDefs = gql`
     extend type Query {
         box(id: ID!): Box!
         allBox(idStock: ID!): [Box!]
-        boxClient(idClient: ID!): [Box!]
     }
 
     extend type Mutation {
         createBox (content: boxContent!): Box @rateLimit
 
-        updateBox (id: Int!, content: boxContent!, noteTrace: String): statusUpdate
+        updateBox (id: ID!, content: boxContent!): statusUpdate
 
-        deleteBox ( id: Int! ): statusDelete
+        deleteBox ( id: ID! ): statusDelete
     }
 
     extend type Subscription {
-        boxCreated(idStock: Int!): Box
+        boxCreated(idStock: ID!): Box
     }
 
     type Box {
@@ -41,10 +40,6 @@ export const typeDefs = gql`
         note:                               String
         createdAt:                          Date @date(defaultFormat: "dd/mm/yyyy HH:MM:ss")
         updateAt:                           Date @date(defaultFormat: "dd/mm/yyyy HH:MM:ss")
-        stock:                              Stock
-        client:                             [Client]!
-        lastTrace:                          [BoxTrace]!
-        traceBox:                           [BoxTrace]!
     }
 
     input boxContent {
@@ -66,8 +61,6 @@ export const typeDefs = gql`
         price_delivery:                     Float
         TVA:                                Int
         note:                               String
-        id_stock:                           Int!
-        id_client:                          Int!
-        id_person:                          Int!
+        id_stock:                           ID!
     }
 `;

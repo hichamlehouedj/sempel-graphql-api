@@ -6,22 +6,14 @@ import {createRateLimitTypeDef} from 'graphql-rate-limit-directive';
 
 import {schemaDirectives} from './directives';
 
-import {typeDefsBox, typeDefsClient, typeDefsCompany, typeDefsFactor, typeDefsInvoice, typeDefsPerson, typeDefsUser, typeDefsBoxTrace, typeDefsStock} from './schema';
-import {resolversBox, resolversBoxTrace, resolversClient, resolversCompany, resolversInvoice, resolversPerson, resolversUser, resolversStock} from './resolvers'
+import {typeDefsBox } from './schema';
+import {resolversBox } from './resolvers'
 
 const { merge } = lodash;
 
 const typeDefs = gql`
     scalar Date
     directive @date(defaultFormat: String = "dd/mm/yyyy HH:MM:ss") on FIELD_DEFINITION
-    directive @isAuth on FIELD_DEFINITION
-    directive @hasRole(requires: [Role!] ) on FIELD_DEFINITION
-    
-    enum Role {
-        ADMIN
-        USER
-        CLIENT
-    }
 
     type Query @rateLimit {
         _empty: String
@@ -34,7 +26,6 @@ const typeDefs = gql`
     type Subscription {
         _empty: String
     }
-
 
     type statusUpdate {
         status: Boolean
@@ -60,16 +51,8 @@ const resolvers = {
 
 
 export const schema = makeExecutableSchema({
-    typeDefs: [
-        createRateLimitTypeDef(), typeDefs, typeDefsBox, typeDefsClient, typeDefsCompany, 
-        typeDefsFactor, typeDefsInvoice, typeDefsPerson, 
-        typeDefsUser, typeDefsBoxTrace, typeDefsStock
-    ],
-    resolvers: merge( 
-        resolvers, resolversBox, resolversClient, 
-        resolversCompany, resolversInvoice, resolversPerson, 
-        resolversUser, resolversBoxTrace, resolversStock 
-    ),
+    typeDefs: [ createRateLimitTypeDef(), typeDefs, typeDefsBox ],
+    resolvers: merge( resolvers, resolversBox ),
     schemaDirectives: schemaDirectives,
     tracing: true,
     playground: true,
@@ -78,7 +61,7 @@ export const schema = makeExecutableSchema({
         if (err.message.startsWith('Database Error: ')) {
             return new Error('Internal server error');
         }
-        
+
         return err;
     }
 });
