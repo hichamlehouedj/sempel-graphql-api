@@ -3,4 +3,3 @@ Doc
 client
 config/config.js
 *.log
-.env
