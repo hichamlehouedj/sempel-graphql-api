@@ -1,4 +1,4 @@
-# 🚀 Welcome to GraphQL Api Special for Delivery Hash system!!!
+# 🚀 Simpel GraphQL Api !!!
 
 This project has been created using **IT Hash team**, you can now run
 
