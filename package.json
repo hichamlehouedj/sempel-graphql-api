@@ -33,7 +33,7 @@
     "express-rate-limit": "^5.3.0",
     "express-session": "^1.17.2",
     "express-useragent": "^1.0.15",
-    "graphql": "^15.5.1",
+    "graphql": "^15.8.0",
     "graphql-cost-analysis": "^1.0.3",
     "graphql-depth-limit": "^1.1.0",
     "graphql-disable-introspection": "^1.2.0",
