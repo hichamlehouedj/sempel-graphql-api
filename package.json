@@ -43,7 +43,7 @@
     "graphql-subscriptions": "^1.2.1",
     "helmet": "^4.6.0",
     "jsonwebtoken": "^8.5.1",
-    "keycloak-connect": "^14.0.0",
+    "keycloak-connect": "^21.0.1",
     "keycloak-connect-graphql": "^0.7.0",
     "lodash": "^4.17.21",
     "mysql": "^2.18.1",
